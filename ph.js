@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-var port = 9494;
+var port = 80;
 var server = require('webserver').create();
 
 var webPage = require('webpage');
@@ -14,6 +14,7 @@ function parseGET(url){
     var e = part.indexOf("=")
     var key = part.substr(0, e);
     var value = part.substr(e+1);
+    value = value.replace(/\+/g, '%20');
     result[key] = decodeURIComponent(decodeURIComponent(value));
   });
   return result;
@@ -30,6 +31,7 @@ var service = server.listen(port, function (request, response) {
       WaveDrom.ProcessAll();
       return document.getElementById('WaveDrom_Display_0').innerHTML;
     }, g);
+    ret = ret.replace(/href/g,'xlink:href');
     response.statusCode = 200;
     response.setHeader("Content-Type", "image/svg+xml");
     response.write(ret);
